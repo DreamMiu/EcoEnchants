@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/setup-java@v1
         with:
-          java-version: 8
+          java-version: 17
       - name: checkout repository
         uses: actions/checkout@v2
       - name: cache gradle packages
