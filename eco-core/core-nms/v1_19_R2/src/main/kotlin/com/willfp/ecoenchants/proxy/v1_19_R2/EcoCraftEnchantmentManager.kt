@@ -1,11 +1,9 @@
 package com.willfp.ecoenchants.proxy.v1_19_R2
 
-import com.willfp.ecoenchants.proxy.proxies.EcoCraftEnchantmentManagerProxy
-import com.willfp.ecoenchants.vanilla.VanillaEnchantmentData
-import net.minecraft.core.Registry
+import com.willfp.ecoenchants.enchant.EcoCraftEnchantmentManagerProxy
+import com.willfp.ecoenchants.enchant.VanillaEnchantmentData
+import com.willfp.ecoenchants.enchant.registration.legacy.LegacyEnchantmentRegisterer
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
-import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 
 class EcoCraftEnchantmentManager : EcoCraftEnchantmentManagerProxy {
@@ -20,7 +18,8 @@ class EcoCraftEnchantmentManager : EcoCraftEnchantmentManagerProxy {
             if (key.key != enchantment.key.key) {
                 continue
             }
-            EcoCraftEnchantment(enchant, data).register()
+
+            LegacyEnchantmentRegisterer.registerToBukkit(EcoCraftEnchantment(enchant, data))
         }
     }
 }

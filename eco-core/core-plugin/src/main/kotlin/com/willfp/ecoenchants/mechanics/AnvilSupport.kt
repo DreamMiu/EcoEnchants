@@ -4,9 +4,8 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.fast.fast
 import com.willfp.eco.core.proxy.ProxyConstants
 import com.willfp.eco.util.StringUtils
-import com.willfp.ecoenchants.enchants.EcoEnchants
-import com.willfp.ecoenchants.enchants.wrap
-import com.willfp.ecoenchants.proxy.proxies.OpenInventoryProxy
+import com.willfp.ecoenchants.enchant.EcoEnchants
+import com.willfp.ecoenchants.enchant.wrap
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Tag
@@ -15,6 +14,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.PrepareAnvilEvent
+import org.bukkit.inventory.AnvilInventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
@@ -34,6 +34,14 @@ data class AnvilResult(
 fun Int.infiniteIfNegative() = if (this < 1) Int.MAX_VALUE else this
 
 private val FAIL = AnvilResult(null, null)
+
+interface OpenInventoryProxy {
+    fun getOpenInventory(player: Player): Any
+}
+
+interface AnvilRepairCostProxy {
+    fun setMaxRepairCost(inventory: AnvilInventory, cost: Int)
+}
 
 @Suppress("DEPRECATION")
 class AnvilSupport(
@@ -130,6 +138,7 @@ class AnvilSupport(
                 outItem.fast().repairCost = (repairCost + 1) * 2 - 1
             }
 
+            event.inventory.maximumRepairCost = plugin.configYml.getInt("anvil.max-repair-cost").infiniteIfNegative()
             event.inventory.repairCost = cost
             event.result = outItem
             event.inventory.setItem(2, outItem)
@@ -155,7 +164,7 @@ class AnvilSupport(
         val permanenceCurse = EcoEnchants.getByID("permanence_curse")
 
         if (permanenceCurse != null) {
-            if (left.fast().getEnchants(true).containsKey(permanenceCurse)) {
+            if (left.fast().getEnchants(true).containsKey(permanenceCurse.enchantment)) {
                 return FAIL
             }
         }

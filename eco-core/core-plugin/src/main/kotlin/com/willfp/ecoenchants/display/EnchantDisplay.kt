@@ -9,8 +9,8 @@ import com.willfp.eco.core.fast.fast
 import com.willfp.ecoenchants.EcoEnchantsPlugin
 import com.willfp.ecoenchants.commands.CommandToggleDescriptions.Companion.seesEnchantmentDescriptions
 import com.willfp.ecoenchants.display.EnchantSorter.sortForDisplay
-import com.willfp.ecoenchants.enchants.EcoEnchant
-import com.willfp.ecoenchants.enchants.wrap
+import com.willfp.ecoenchants.enchant.EcoEnchant
+import com.willfp.ecoenchants.enchant.wrap
 import com.willfp.ecoenchants.target.EnchantmentTargets.isEnchantable
 import com.willfp.libreforge.ItemProvidedHolder
 import org.bukkit.Material
@@ -78,10 +78,10 @@ class EnchantDisplay(private val plugin: EcoEnchantsPlugin) : DisplayModule(plug
                 val enchantLevel = enchant.getLevel(level)
                 val holder = ItemProvidedHolder(enchantLevel, itemStack)
 
-                val enchantNotMetLines = enchantLevel.conditions.getNotMetLines(player, holder).map { Display.PREFIX + it }
+                val enchantNotMetLines = holder.getNotMetLines(player).map { Display.PREFIX + it }
                 notMetLines.addAll(enchantNotMetLines)
 
-                if (enchantNotMetLines.isNotEmpty() || enchantLevel.conditions.isShowingAnyNotMet(player, holder)) {
+                if (enchantNotMetLines.isNotEmpty() || holder.isShowingAnyNotMet(player)) {
                     showNotMet = true
                 }
             }
@@ -106,7 +106,8 @@ class EnchantDisplay(private val plugin: EcoEnchantsPlugin) : DisplayModule(plug
                 enchantLore.add(Display.PREFIX + formattedName)
 
                 if (shouldDescribe) {
-                    enchantLore.addAll(enchant.getFormattedDescription(level).map { Display.PREFIX + it })
+                    enchantLore.addAll(enchant.getFormattedDescription(level, player)
+                        .filter { it.isNotEmpty() }.map { Display.PREFIX + it })
                 }
             }
         }

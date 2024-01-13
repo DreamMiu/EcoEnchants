@@ -1,10 +1,10 @@
 package com.willfp.ecoenchants.proxy.v1_19_R1
 
-import com.willfp.ecoenchants.enchants.EcoEnchant
-import com.willfp.ecoenchants.enchants.EcoEnchants
-import com.willfp.ecoenchants.vanilla.VanillaEnchantmentData
+import com.willfp.ecoenchants.enchant.EcoEnchant
+import com.willfp.ecoenchants.enchant.VanillaEnchantmentData
 import net.minecraft.world.item.enchantment.Enchantment
 import org.bukkit.craftbukkit.v1_19_R1.enchantments.CraftEnchantment
+
 
 class EcoCraftEnchantment(
     target: Enchantment,
@@ -18,9 +18,5 @@ class EcoCraftEnchantment(
         }
 
         return data.conflicts?.contains(other.key) ?: super.conflictsWith(other)
-    }
-
-    fun register() {
-        EcoEnchants.register(this)
     }
 }
